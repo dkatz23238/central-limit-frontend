@@ -86,11 +86,9 @@ function renderStatistics(data) {
   meanElementPred.innerHTML = data.theoretical_mean_of_means.toLocaleString(
     "en-US"
   );
-
   stdElementPred.innerHTML = data.theoretical_std_of_means.toLocaleString(
     "en-US"
   );
-
   sumMeanElement.innerHTML = data.mean_of_sums.toLocaleString("en-US");
   sumStdElement.innerHTML = data.std_of_sums.toLocaleString("en-US");
   sumMeanElementPred.innerHTML = data.theoretical_mean_of_sums.toLocaleString(
@@ -99,38 +97,6 @@ function renderStatistics(data) {
   sumStdElementPred.innerHTML = data.theoretical_std_of_sums.toLocaleString(
     "en-US"
   );
-
-  if (data.mean_of_sums > data.theoretical_mean_of_sums) {
-    sumMeanElement.classList.remove("text-danger");
-    sumMeanElement.classList.add("text-success");
-  } else {
-    sumMeanElement.classList.remove("text-success");
-    sumMeanElement.classList.add("text-danger");
-  }
-
-  if (data.std_of_means > data.theoretical_std_of_means) {
-    stdElement.classList.remove("text-danger");
-    stdElement.classList.add("text-success");
-  } else {
-    stdElement.classList.remove("text-success");
-    stdElement.classList.add("text-danger");
-  }
-
-  if (data.std_of_sums > data.theoretical_std_of_sums) {
-    sumStdElement.classList.remove("text-danger");
-    sumStdElement.classList.add("text-success");
-  } else {
-    sumStdElement.classList.remove("text-success");
-    sumStdElement.classList.add("text-danger");
-  }
-
-  if (data.mean_of_means > data.theoretical_mean_of_means) {
-    meanElement.classList.remove("text-danger");
-    meanElement.classList.add("text-success");
-  } else {
-    meanElement.classList.remove("text-success");
-    meanElement.classList.add("text-danger");
-  }
 }
 
 function hideForms() {
@@ -140,120 +106,42 @@ function hideForms() {
   $("#loading").hide();
 }
 
-function allPossibleCases(arr) {
-  if (arr.length == 1) {
-    return arr[0];
-  } else {
-    var result = [];
-    var allCasesOfRest = allPossibleCases(arr.slice(1)); // recur with the rest of array
-    for (var i = 0; i < allCasesOfRest.length; i++) {
-      for (var j = 0; j < arr[0].length; j++) {
-        result.push(arr[0][j] + allCasesOfRest[i]);
-      }
-    }
-    return result;
-  }
-}
+const serverURL = "https://stats2server-c2iwk3zleq-ue.a.run.app";
 
-async function handleRunExperiment() {
-  $("#loading").show();
-  let sampleSize = $("#sampleSize").val();
-  let nSamples = $("#nSamples").val();
-
-  document.getElementById("sampleSizeWidget").innerHTML = "" + sampleSize;
-  document.getElementById("nSamplesWidget").innerHTML = "" + nSamples;
-
-  console.log(`sampleSize ${sampleSize} nSamples ${nSamples}`);
-  let selectElement = document.getElementById("distributionSelection");
-  if (selectElement.value === "Select a distribution for Experiment") {
-    alert("Please Select A Distribution To Continue.");
-  }
-
-  switch (selectElement.value) {
-    case "gamma":
-      let alpha = parseFloat($("#alpha").val());
-      let theta = parseFloat($("#theta").val());
-      var data = await fetch(
-        `${serverURL}/gamma?alpha=${alpha}&theta=${theta}&n_samples=${nSamples}&sample_size=${sampleSize}`
-      );
-      data = await data.json();
-
-      break;
-    case "normal":
-      let mu = parseFloat($("#mu").val());
-      let sigma = parseFloat($("#sigma").val());
-      var data = await fetch(
-        `${serverURL}/normal?mu=${mu}&sigma=${sigma}&n_samples=${nSamples}&sample_size=${sampleSize}`
-      );
-      data = await data.json();
-
-      break;
-    case "exponential":
-      let lambda = parseFloat($("#lambda").val());
-      var data = await fetch(
-        `${serverURL}/exponential?lambda=${lambda}&n_samples=${nSamples}&sample_size=${sampleSize}`
-      );
-      data = await data.json();
-
-      break;
-  }
-
-  renderPlots(data);
-  renderStatistics(data);
-  $("#loading").hide();
-}
-
-function handleSelect() {
-  let selectElement = document.getElementById("distributionSelection");
-  let selectedValue = selectElement.value;
+$(document).ready(async function () {
   hideForms();
-  switch (selectedValue) {
-    case "gamma":
-      $("#gammaForm").toggle();
-      break;
-    case "normal":
-      $("#gaussianForm").toggle();
-      break;
-    case "exponential":
-      $("#exponentialForm").toggle();
-      break;
-  }
-}
 
-function handleRunAnimation() {
-  let selectElement = document.getElementById("distributionSelection");
-  if (selectElement.value === "Select a distribution for Experiment") {
-    alert("Please Select A Distribution To Continue.");
-    return;
-  }
-
-  $("#loading").show();
-  let sampleSize = $("#sampleSizeGroup").hide();
-  let nSamples = $("#nSamplesGroup").hide();
-
-  let i = 0;
-  let n = 10;
-  let m = 10;
-  let selectedValue = selectElement.value;
-  var sampleSizes = [];
-  for (var k = 1; k <= 51; k = k + 5) {
-    for (var j = 2; j <= 30; j = j + 20) {
-      sampleSizes.push([k, j]);
+  $("#distributionSelection").change(function () {
+    let selectElement = document.getElementById("distributionSelection");
+    let selectedValue = selectElement.value;
+    hideForms();
+    switch (selectedValue) {
+      case "gamma":
+        $("#gammaForm").toggle();
+        break;
+      case "normal":
+        $("#gaussianForm").toggle();
+        break;
+      case "exponential":
+        $("#exponentialForm").toggle();
+        break;
     }
-  }
+  });
 
-  timer = setInterval(async function () {
-    let newProgress = Math.round(1000 * (i / 20));
-    $("#progressBar")
-      .attr("aria-valuenow", newProgress)
-      .css("width", newProgress);
+  $("#selectDistButton").click(async function () {
+    $("#loading").show();
+    let sampleSize = $("#sampleSize").val();
+    let nSamples = $("#nSamples").val();
 
-    var now = +new Date();
-    console.log(newProgress);
-    i++;
+    document.getElementById("sampleSizeWidget").innerHTML = "" + sampleSize;
+    document.getElementById("nSamplesWidget").innerHTML = "" + nSamples;
 
-    let nSamples = sampleSizes[i][0];
-    let sampleSize = sampleSizes[i][1];
+    console.log(`sampleSize ${sampleSize} nSamples ${nSamples}`);
+    let selectElement = document.getElementById("distributionSelection");
+    if (selectElement.value === "Select a distribution for Experiment") {
+      alert("Please Select A Distribution To Continue.");
+    }
+
     switch (selectElement.value) {
       case "gamma":
         let alpha = parseFloat($("#alpha").val());
@@ -283,28 +171,8 @@ function handleRunAnimation() {
         break;
     }
 
-    console.log(data);
     renderPlots(data);
     renderStatistics(data);
-    document.getElementById("sampleSizeWidget").innerHTML = "" + sampleSize;
-    document.getElementById("nSamplesWidget").innerHTML = "" + nSamples;
-
     $("#loading").hide();
-
-    n = n + 10;
-    m = m + 10;
-    if (i > 500) {
-      clearInterval(timer);
-    }
-    // clear the timer at 400px to stop the animation
-  }, 100);
-}
-
-const serverURL = "https://stats2server-c2iwk3zleq-ue.a.run.app";
-
-$(document).ready(async function () {
-  hideForms();
-  $("#distributionSelection").change(handleSelect);
-  $("#selectDistButton").click(handleRunExperiment);
-  $("#runAnimationButton").click(handleRunAnimation);
+  });
 });
