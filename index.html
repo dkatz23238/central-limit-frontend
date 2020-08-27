@@ -1,0 +1,262 @@
+<html>
+
+<head>
+
+  <script src="https://cdn.plot.ly/plotly-1.49.5.min.js"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/bootstrap.css">
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="row  mb-2">
+      <div class="col">
+        <div id="loading" class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <h1 class="text-center"> Central Limit Theorem</h1>
+        <h4 class="text-center text-success">An experimental understanding tool</h4>
+        <p>The Central Limit Theorem describes the characteristics of the <code>
+          population of the means
+        </code> which has been created from the means of an infinite number of random population samples of size (N),
+          all of them drawn from a given <b>parent population</b>. The Central Limit Theorem predicts that regardless of
+          the distribution of the <b>parent population</b>.</p>
+        <ul>
+          <li>The mean of the population of means is always equal to the mean of the parent population from which the
+            population samples were drawn.</li>
+          <li>The standard deviation of the population of means is always equal to the standard deviation of the parent
+            population divided by the square root of the sample size (N).</li>
+          <li>The distribution of means will increasingly approximate a normal distribution as the size N of samples
+            increases.</li>
+        </ul>
+        <h5 class="text-muted">Use this tool to run numerical tests on different parent distributions to understand the implications of the theorem.</h5>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col cols-4">
+
+        <div id="parameterForms">
+
+          <div class="row" id="sizesForm">
+            <div class="col">
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">Sample Size</span>
+                </div>
+                <input value="1000" id="sampleSize" type="text" class="form-control" placeholder="Enter n"
+                  aria-label="Enter Parameter" aria-describedby="basic-addon1">
+              </div>
+            </div>
+            <div class="col">
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">N Samples</span>
+                </div>
+                <input value="1000" id="nSamples" type="text" class="form-control" placeholder="Enter N"
+                  aria-label="Enter Parameter" aria-describedby="basic-addon1">
+              </div>
+            </div>
+          </div>
+
+          <div class="row" id="gammaForm">
+            <div class="col">
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">&alpha;</span>
+                </div>
+                <input value="1" id="alpha" type="text" class="form-control" placeholder="Enter Parameter"
+                  aria-label="Enter Parameter" aria-describedby="basic-addon1">
+              </div>
+            </div>
+            <div class="col">
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">&theta;</span>
+                </div>
+                <input value="2" id="theta" type="text" class="form-control" placeholder="Enter Parameter"
+                  aria-label="Enter Parameter" aria-describedby="basic-addon1">
+              </div>
+            </div>
+          </div>
+
+          <div class="row" id="gaussianForm">
+            <div class="col">
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">&mu;</span>
+                </div>
+                <input value="10" id="mu" type="text" class="form-control" placeholder="Enter Parameter"
+                  aria-label="Enter Parameter" aria-describedby="basic-addon1">
+              </div>
+            </div>
+            <div class="col">
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">&sigma;</span>
+                </div>
+                <input value="20" id="sigma" type="text" class="form-control" placeholder="Enter Parameter"
+                  aria-label="Enter Parameter" aria-describedby="basic-addon1">
+              </div>
+            </div>
+          </div>
+
+          <div class="row" id="exponentialForm">
+            <div class="col">
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">&lambda;</span>
+                </div>
+                <input value="0.1" id="lambda" type="text" class="form-control" placeholder="Enter Parameter"
+                  aria-label="Enter Parameter" aria-describedby="basic-addon1">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <div>
+          <select class="form-control mb-2" id="distributionSelection">
+            <option><span class="text-muted">
+                Select a distribution for Experiment
+              </span></option>
+            <option value="gamma">Gamma Distribution</option>
+            <option value="normal">Normal Distribution</option>
+            <option value="exponential">Exponential Distribution</option>
+          </select>
+        </div>
+        <button id="selectDistButton" class="float-right btn btn-success">
+          Run Experiment
+        </button>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col col-12">
+        <div class="card-deck mb-2">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center text-muted">x&#x0304</h5>
+              <h4 class="card-text text-center" id="meanElement"></h4>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center text-muted">&sigma;(x&#x0304)</h5>
+              <h4 class="card-text text-center" id="stdElement"></h4>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center text-muted">E( x&#x0304 )</h5>
+              <h4 class="card-text text-center" id="meanElementPred"></h4>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center text-muted">E( &sigma;(x&#x0304) )</h5>
+              <h4 class="card-text text-center" id="stdElementPred"></h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col cols-12">
+        <div class="card-deck">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center text-muted">&Sigma; x&#x0304</h5>
+              <h4 class="card-text text-center" id="sumMeanElement"></h4>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center text-muted">&Sigma;&sigma;(x&#x0304)</h5>
+              <h4 class="card-text text-center" id="sumStdElement"></h4>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center text-muted">E( &Sigma; x&#x0304 )</h5>
+              <h4 class="card-text text-center" id="sumMeanElementPred"></h4>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center text-muted">E( &Sigma;&sigma;(x&#x0304) )</h5>
+              <h4 class="card-text text-center" id="sumStdElementPred"></h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col cols-12">
+        <div class="card-deck mb-2">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center text-muted">N Samples</h5>
+              <h4 class="card-text text-center" id="nSamplesWidget"></h4>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center text-muted">Sample Size</h5>
+              <h4 class="card-text text-center" id="sampleSizeWidget"></h4>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="col-sm-12 col-lg-12">
+          <div id="traceDist">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-lg-6">
+        <div id="meansDist"></div>
+      </div>
+      <div class="col-sm-12 col-lg-6">
+        <div id="sumsDist"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer mt-auto py-3">
+  <div class="container">
+    <span class="text-muted">Made with by David Katz</span>
+    <br>
+     <span class="text-muted"><code>davidemanuelkatz@gmail.com</code></span>
+  </div>
+</footer>
+  <script src="index.js"></script>
+</body>
+
+</html>
